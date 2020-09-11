@@ -3,7 +3,7 @@ import "./App.css";
 import Board from "./components/Board";
 import ChatArea from "./components/ChatArea";
 import io from "socket.io-client";
-const socket = io(process.env.BACKEND);
+const socket = io(process.env.REACT_APP_BACKEND);
 
 export default function App() {
   // Game States;
