@@ -1,0 +1,73 @@
+.chat-area {
+  height: 200px;
+  width: 302px;
+  margin: 0 auto;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.input-paper {
+  padding: 4px 4px;
+  display: flex;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+}
+
+.chat-box {
+  margin-left: 1rem;
+  flex: 1;
+}
+
+.send-icon {
+  padding: 10px;
+}
+
+.notification {
+  width: 300px !important;
+  margin: 0 auto;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white !important;
+  background-color: rgb(50, 50, 50) !important;
+  text-align: left;
+}
+
+.notification > div {
+  box-shadow: none;
+  font-size: 1.1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.messages {
+  width: 100%;
+  height: 100px;
+  overflow: scroll;
+  text-align: left;
+  overflow-x: hidden;
+}
+
+.message {
+  width: 100% !important;
+  margin: 0.5rem 0;
+  padding: 0.8rem 0;
+  padding-left: 1rem;
+  background: rgb(50, 50, 50);
+  color: white;
+}
+
+.message-opponent {
+  background: rgb(80, 80, 80);
+  color: white;
+}
+
+.messages::-webkit-scrollbar {
+  width: 0px;
+}
