@@ -1,5 +1,4 @@
 .chat-area {
-  height: 200px;
   width: 302px;
   margin: 0 auto;
   margin-top: 1rem;
@@ -13,9 +12,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 1rem;
-  position: absolute !important;
-  bottom: 0;
-  left: 0;
+  vertical-align: baseline;
 }
 
 .chat-box {
@@ -48,24 +45,15 @@
 
 .messages {
   width: 100%;
-  height: 100px;
+  height: 95px;
   overflow: scroll;
   text-align: left;
   overflow-x: hidden;
 }
 
-.message {
-  width: 100% !important;
-  margin: 0.5rem 0;
-  padding: 0.8rem 0;
-  padding-left: 1rem;
-  background: rgb(50, 50, 50);
-  color: white;
-}
-
-.message-opponent {
-  background: rgb(80, 80, 80);
-  color: white;
+.message-text {
+  word-break: break-word;
+  padding-left: 0.7rem;
 }
 
 .messages::-webkit-scrollbar {

@@ -1,15 +1,18 @@
 import React from "react";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import FaceIcon from "@material-ui/icons/Face";
+import PersonIcon from "@material-ui/icons/Person";
 
 export default function Message({ message }) {
   return (
-    <>
+    <ListItem>
       {message.isOfPlayer ? (
-        <div className="message">You: {message.message}</div>
+        <FaceIcon color="action" />
       ) : (
-        <div className="message message-opponent">
-          Opponent: {message.message}
-        </div>
+        <PersonIcon color="action" />
       )}
-    </>
+      <ListItemText className="message-text" primary={message.message} />
+    </ListItem>
   );
 }

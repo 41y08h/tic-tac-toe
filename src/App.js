@@ -3,7 +3,11 @@ import "./App.css";
 import Board from "./components/Board";
 import ChatArea from "./components/ChatArea";
 import io from "socket.io-client";
-const socket = io(process.env.REACT_APP_BACKEND);
+const socket = io(
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/"
+    : process.env.REACT_APP_BACKEND
+);
 
 export default function App() {
   // Game States;
@@ -23,6 +27,7 @@ export default function App() {
 
   useEffect(() => {
     socket.on("notification", setnotification);
+    socket.on("messages", setmessages);
     socket.on("play", setboard);
     socket.on("winner", (winner) => {
       if (winner === "DRAW") {
