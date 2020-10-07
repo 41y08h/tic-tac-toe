@@ -15,7 +15,7 @@ export default function App() {
   const [messages, setmessages] = useState([]);
 
   // UI states;
-  const [notification, setnotification] = useState(null);
+  const [notification, setnotification] = useState("Waiting for server!");
 
   // Game Functions;
   function onPlay(e) {
