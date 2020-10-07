@@ -3,6 +3,7 @@
   margin: 0 auto;
   margin-top: 1rem;
   position: relative;
+  margin-bottom: 1rem;
 }
 
 .input-paper {
@@ -32,7 +33,7 @@
   align-items: center;
   justify-content: center;
   color: white !important;
-  background-color: rgb(50, 50, 50) !important;
+  background-color: tomato !important;
   text-align: left;
 }
 

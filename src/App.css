@@ -5,10 +5,11 @@
   font-family: "Poppins", sans-serif;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  color: tomato;
 }
 
 .square {
-  background-color: black;
+  background-color: tomato;
   color: white;
   font-size: 2rem;
 }
@@ -23,6 +24,3 @@
   width: fit-content;
   margin: 0 auto;
 }
-
-
-

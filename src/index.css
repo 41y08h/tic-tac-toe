@@ -6,6 +6,11 @@
   outline: none;
 }
 
+html {
+  background-color: #fff;
+  background-image: url("/back-pattern.png");
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
