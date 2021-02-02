@@ -1,61 +1,53 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
-import Board from "./components/Board";
-import ChatArea from "./components/ChatArea";
 import io from "socket.io-client";
-const socket = io(
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/"
-    : process.env.REACT_APP_BACKEND
-);
+import events from "./events";
+import Board from "./components/Board";
+import Heading from "./components/Heading";
+import ChatArea from "./components/ChatArea";
+import "./App.css";
+
+// Short configurations
+const environment = process.env.NODE_ENV;
+const backendURLs = {
+  development: "http://localhost:5000/",
+  production: process.env.REACT_APP_BACKEND,
+};
+const backendURL = backendURLs[environment];
+
+const socket = io(backendURL);
 
 export default function App() {
-  // Game States;
-  const [board, setboard] = useState(Array(9).fill(null));
-  const [messages, setmessages] = useState([]);
-
-  // UI states;
-  const [notification, setnotification] = useState("Waiting for server!");
+  const [board, setBoard] = useState(Array(9).fill(""));
+  const [notification, setNotification] = useState("Connecting ...");
+  const [messages, setMessages] = useState([]);
 
   // Game Functions;
   function onPlay(e) {
-    const index = e.target.id;
-
-    // Send to server
-    socket.emit("play", index);
+    // Emit event to server
+    socket.emit(events.play, e.target.id);
   }
 
   useEffect(() => {
-    socket.on("notification", setnotification);
-    socket.on("messages", setmessages);
-    socket.on("play", setboard);
-    socket.on("winner", (winner) => {
-      if (winner === "DRAW") {
-        setnotification("Tie game!");
-      } else {
-        setnotification(winner);
-      }
-    });
+    socket.on(events.notification, setNotification);
+    socket.on(events.messages, setMessages);
+    socket.on(events.play, setBoard);
 
-    socket.on("message", (message) => {
-      setmessages((prev) => {
-        const newMessages = prev.slice();
-        newMessages.push(message);
-        return newMessages;
-      });
-    });
+    socket.on(events.message, (newMessage) =>
+      setMessages((previousMessages) => [...previousMessages, newMessage])
+    );
+
+
   }, []);
 
   return (
     <>
-      <h1 className="game-heading">
-        <i className="fab fa-twitch"></i>&nbsp; Tic Tac Toe
-      </h1>
+      <Heading />
       <Board values={board} onPlay={onPlay} />
       <ChatArea
         socket={socket}
         notification={notification}
         messages={messages}
+        playerId={socket.id}
       />
     </>
   );
