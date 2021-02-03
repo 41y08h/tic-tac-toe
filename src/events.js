@@ -1,9 +1,8 @@
 const events = {
-  notification: "NOTIFICATION",
-  message: "MESSAGE",
-  messages: "MESSAGES",
-  play: "PLAY",
-  winnerDeclaration: "WINNER_DECLARATION",
+  notification: "notification",
+  message: "message",
+  messages: "messages",
+  play: "play",
 };
 
 export default events;
