@@ -35,8 +35,6 @@ export default function App() {
     socket.on(events.message, (newMessage) =>
       setMessages((previousMessages) => [...previousMessages, newMessage])
     );
-
-
   }, []);
 
   return (
