@@ -14,9 +14,7 @@ const backendURLs = {
 };
 const backendURL = backendURLs[environment];
 
-const socket = io(backendURL, {
-  withCredentials: true,
-});
+const socket = io(backendURL);
 
 export default function App() {
   const [board, setBoard] = useState(Array(9).fill(""));
