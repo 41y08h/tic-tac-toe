@@ -29,11 +29,10 @@ export default function App() {
 
   useEffect(() => {
     socket.on(events.notification, setNotification);
-    socket.on(events.messages, setMessages);
     socket.on(events.play, setBoard);
 
-    socket.on(events.message, (newMessage) =>
-      setMessages((previousMessages) => [...previousMessages, newMessage])
+    socket.on(events.message, (...messages) =>
+      setMessages((previousMessages) => [...previousMessages, ...messages])
     );
   }, []);
 
@@ -45,7 +44,7 @@ export default function App() {
         socket={socket}
         notification={notification}
         messages={messages}
-        playerId={socket.id}
+        socketId={socket.id}
       />
     </>
   );

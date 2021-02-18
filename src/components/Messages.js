@@ -4,7 +4,7 @@ import List from "@material-ui/core/List";
 import MobileScreenShareIcon from "@material-ui/icons/MobileScreenShare";
 import { ListItem, ListItemText } from "@material-ui/core";
 
-export default function Messages({ messages, playerId }) {
+export default function Messages({ messages, socketId }) {
   const lastMessageRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Messages({ messages, playerId }) {
         />
       </ListItem>
       {messages.map((message, i) => {
-        return <Message key={i} message={message} playerId={playerId} />;
+        return <Message key={i} message={message} socketId={socketId} />;
       })}
       <div ref={lastMessageRef} />
     </List>

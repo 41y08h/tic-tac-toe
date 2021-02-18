@@ -4,10 +4,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import FaceIcon from "@material-ui/icons/Face";
 import PersonIcon from "@material-ui/icons/Person";
 
-export default function Message({ message, playerId }) {
+export default function Message({ message, socketId }) {
   return (
     <ListItem>
-      {message.playerId === playerId ? (
+      {message.bySocketId === socketId ? (
         <FaceIcon color="action" />
       ) : (
         <PersonIcon color="action" />
