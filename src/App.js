@@ -1,31 +1,22 @@
 import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
 import events from "./events";
 import Board from "./components/Board";
 import Heading from "./components/Heading";
-import ChatArea from "./components/ChatArea";
 import "./App.css";
-
-// Short configurations
-const environment = process.env.NODE_ENV;
-const backendURLs = {
-  development: "http://localhost:5000/",
-  production: process.env.REACT_APP_BACKEND,
-};
-const backendURL = backendURLs[environment];
-
-const socket = io(backendURL);
+import InfoContainer from "./components/InfoContainer";
+import { makeStyles } from "@material-ui/core";
+import { useGame } from "./contexts/GameContext";
 
 export default function App() {
-  const [board, setBoard] = useState(Array(9).fill(""));
-  const [notification, setNotification] = useState("Connecting ...");
-  const [messages, setMessages] = useState([]);
+  const {
+    setBoard,
+    setNotification,
+    setMessages,
+    setOpponentId,
+    setIsFirstPlayer,
 
-  // Game Functions;
-  function onPlay(e) {
-    // Emit event to server
-    socket.emit(events.play, e.target.id);
-  }
+    socket,
+  } = useGame();
 
   useEffect(() => {
     socket.on(events.notification, setNotification);
@@ -34,18 +25,29 @@ export default function App() {
     socket.on(events.message, (...messages) =>
       setMessages((previousMessages) => [...previousMessages, ...messages])
     );
-  }, []);
+    socket.on(events.opponentId, (payload) => {
+      setOpponentId(payload.id);
+      setIsFirstPlayer(payload.isFirstPlayer);
+    });
+  }, [
+    setBoard,
+    setIsFirstPlayer,
+    setMessages,
+    setNotification,
+    setOpponentId,
+    socket,
+  ]);
 
+  const useStyles = makeStyles(() => ({
+    root: { maxWidth: "302px", margin: "auto" },
+  }));
+
+  const classes = useStyles();
   return (
-    <>
+    <div className={classes.root}>
       <Heading />
-      <Board values={board} onPlay={onPlay} />
-      <ChatArea
-        socket={socket}
-        notification={notification}
-        messages={messages}
-        socketId={socket.id}
-      />
-    </>
+      <Board />
+      <InfoContainer />
+    </div>
   );
 }
