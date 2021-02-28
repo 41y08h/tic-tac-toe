@@ -1,18 +1,23 @@
-import { makeStyles } from "@material-ui/core";
 import React from "react";
+import events from "../RTCs/events";
+import socket from "../RTCs/configureSocket";
+import { makeStyles } from "@material-ui/core";
 
-export default function Square(props) {
-  const useStyles = makeStyles(() => ({
-    root: {
-      backgroundColor: "tomato",
-      color: "white",
-      fontSize: "2rem",
-    },
-  }));
+const useStyles = makeStyles(() => ({
+  root: {
+    backgroundColor: "tomato",
+    fontSize: "2rem",
+    color: "white",
+  },
+}));
+
+export default function Square({ index, value }) {
   const classes = useStyles();
+  const onPlay = () => socket.emit(events.play, index);
+
   return (
-    <button className={classes.root} {...props}>
-      {props.value}
+    <button className={classes.root} onClick={onPlay}>
+      {value}
     </button>
   );
 }
