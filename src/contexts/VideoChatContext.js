@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 import useEventSubscription from "../hooks/useEventSubscription";
 import socket from "../RTCs/configureSocket";
@@ -17,10 +23,10 @@ export default function VideoChatProvider({ children }) {
   const [callStatus, setCallStatus] = useState("IDLE");
   const [opponentId, setOpponentId] = useState(null);
   const [call, setCall] = useState(null);
+  const peerRef = useRef();
 
   const { setTab } = useChatTab();
   const videoRef = useRef();
-  const peerRef = useRef();
 
   function resetCallStates() {
     setCallStatus("IDLE");
@@ -65,16 +71,13 @@ export default function VideoChatProvider({ children }) {
     setTab(1);
 
     peerRef.current = createPeer();
+    if (peerRef.current)
+      peerRef.current.on("call", (call) => {
+        // Set call ref to handle mannual call answering by user in other component
+        setCall(call);
 
-    const peer = peerRef.current;
-
-    // Add listener for incoming call
-    peer.on("call", (call) => {
-      // Set call ref to handle mannual call answering by user in other component
-      setCall(call);
-
-      call.on("stream", onCallConnected);
-    });
+        call.on("stream", onCallConnected);
+      });
   }
 
   async function answerCall() {
