@@ -1,15 +1,21 @@
 import React from "react";
-import { IconButton } from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
 
 export default function ActionButton({
-  Icon,
-  backgroundColor,
-  fontSize = "small",
-  ...props
+  isLarge = false,
+  color,
+  icon: Icon,
+  ...otherProps
 }) {
+  const useStyles = makeStyles(() => ({
+    icon: { color: "white" },
+    button: { backgroundColor: ` ${color} !important` },
+  }));
+  const classes = useStyles();
+
   return (
-    <IconButton {...props} style={{ backgroundColor }}>
-      <Icon {...{ fontSize }} style={{ color: "white" }} />
+    <IconButton className={classes.button} {...otherProps}>
+      <Icon fontSize={isLarge ? "large" : "small"} className={classes.icon} />
     </IconButton>
   );
 }

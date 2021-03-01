@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import ChatTabs from "./ChatTabs";
 import TextChat from "./text/TextChat";
-import VideoChat from "./video2/VideoChat";
+import VideoChat from "./video/VideoChat";
 import { useChatTab } from "../../contexts/ChatTabContext";
 import VideoChatProvider from "../../contexts/VideoChatContext";
 
