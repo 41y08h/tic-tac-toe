@@ -1,9 +1,11 @@
+import React from "react";
 import { makeStyles } from "@material-ui/core";
-import React, { useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import ChatTabs from "./ChatTabs";
 import TextChat from "./text/TextChat";
-import VideoChat from "./video/VideoChat";
+import VideoChat from "./video2/VideoChat";
+import { useChatTab } from "../../contexts/ChatTabContext";
+import VideoChatProvider from "../../contexts/VideoChatContext";
 
 const useStyles = makeStyles(() => ({
   views: {
@@ -17,20 +19,22 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function ChatArea() {
-  const [tabValue, setTabValue] = useState(0);
   const classes = useStyles();
+  const { tab, setTab } = useChatTab();
 
   return (
     <>
-      <ChatTabs {...{ tabValue, setTabValue }} />
+      <ChatTabs />
       <SwipeableViews
-        className={classes.views}
-        index={tabValue}
-        onChangeIndex={setTabValue}
         axis="x"
+        index={tab}
+        onChangeIndex={setTab}
+        className={classes.views}
       >
         <TextChat />
-        <VideoChat setTabValue={setTabValue} />
+        <VideoChatProvider>
+          <VideoChat />
+        </VideoChatProvider>
       </SwipeableViews>
     </>
   );

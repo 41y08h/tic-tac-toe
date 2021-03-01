@@ -6,6 +6,7 @@ const events = {
   callPeer: "callPeer",
   endCall: "endCall",
   opponentIsCalling: "opponentIsCalling",
+  rejectCall: "rejectCall",
 };
 
 export default events;

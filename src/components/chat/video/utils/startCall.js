@@ -3,7 +3,8 @@ import socket from "../../../../RTCs/configureSocket";
 import events from "../../../../RTCs/events";
 
 export default async function startCall(opponentId, onConnected) {
-  const getUserMedia = navigator.mediaDevices.getUserMedia;
+  const getUserMedia =
+    navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
   const hasCameraSupport = Boolean(getUserMedia);
   if (!hasCameraSupport) throw new Error("Bad Camera Support");
 

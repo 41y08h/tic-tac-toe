@@ -2,6 +2,7 @@ import React from "react";
 import { Tab, Tabs, makeStyles } from "@material-ui/core";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
+import { useChatTab } from "../../contexts/ChatTabContext";
 
 const useStyles = makeStyles(() => ({
   root: { backgroundColor: "#ff5e78", color: "white" },
@@ -13,17 +14,22 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function ChatTabs({ tabValue, setTabValue }) {
+export default function ChatTabs() {
   const classes = useStyles();
+  const { tab, setTab } = useChatTab();
+
+  function changeTab(event, tabValue) {
+    setTab(tabValue);
+  }
 
   return (
     <Tabs
       color="inherit"
       variant="fullWidth"
       aria-label="chat tabs"
-      value={tabValue}
+      value={tab}
       className={classes.root}
-      onChange={(e, v) => setTabValue(v)}
+      onChange={changeTab}
       TabIndicatorProps={{ className: classes.tabIndicator }}
     >
       <Tab icon={<ChatBubbleIcon />} />
