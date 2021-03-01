@@ -12,11 +12,11 @@ const VideoChatContext = createContext();
 export function useVideoChat() {
   return useContext(VideoChatContext);
 }
-let callRef;
 
 export default function VideoChatProvider({ children }) {
   const [callStatus, setCallStatus] = useState("IDLE");
   const [opponentId, setOpponentId] = useState(null);
+  const [call, setCall] = useState(null);
 
   const { setTab } = useChatTab();
   const videoRef = useRef();
@@ -24,7 +24,7 @@ export default function VideoChatProvider({ children }) {
 
   function resetCallStates() {
     setCallStatus("IDLE");
-    callRef = null;
+    setCall(null);
 
     if (peerRef.current) peerRef.current.destroy();
     peerRef.current = null;
@@ -53,7 +53,7 @@ export default function VideoChatProvider({ children }) {
     const peer = peerRef.current;
 
     const call = peer.call(opponentId, stream);
-    callRef = call;
+    setCall(call);
 
     // When opponent answers the call
     call.on("stream", onCallConnected);
@@ -71,7 +71,7 @@ export default function VideoChatProvider({ children }) {
     // Add listener for incoming call
     peer.on("call", (call) => {
       // Set call ref to handle mannual call answering by user in other component
-      callRef = call;
+      setCall(call);
 
       call.on("stream", onCallConnected);
     });
@@ -79,7 +79,7 @@ export default function VideoChatProvider({ children }) {
 
   async function answerCall() {
     const stream = await getMediaStream();
-    callRef.answer(stream);
+    call.answer(stream);
   }
 
   async function endCall() {
