@@ -50,6 +50,7 @@ export default function Connected() {
         onLoadedMetadata={(event) => event.target.play()}
       />
       <video
+        muted
         autoPlay
         ref={userVideoRef}
         className={classes.userVideo}
