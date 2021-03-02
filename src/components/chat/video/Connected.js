@@ -8,6 +8,10 @@ const useStyles = makeStyles(() => ({
   remoteVideo: {
     width: "100%",
     height: "100%",
+    objectFit: "cover",
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
   actions: {
     position: "absolute",
@@ -27,7 +31,6 @@ const useStyles = makeStyles(() => ({
     bottom: 0,
     left: 0,
     height: 100,
-    width: 120,
   },
 }));
 export default function Connected() {
