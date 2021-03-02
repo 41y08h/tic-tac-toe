@@ -12,11 +12,11 @@ const useStyles = makeStyles(() => ({
 
 export default function Idle() {
   const classes = useStyles();
-  const { startOutgoingCall, opponentId } = useVideoChat();
+  const { startOutgoingCall, isOpponentConnected } = useVideoChat();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   function onCallButtonClicked() {
-    if (!opponentId) return toast("Your opponent must be connected");
+    if (!isOpponentConnected) return toast("Your opponent must be connected");
     setIsDialogOpen(true);
   }
 

@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { Call, CallEnd } from "@material-ui/icons";
+import { Call } from "@material-ui/icons";
 import React from "react";
 import { useVideoChat } from "../../../contexts/VideoChatContext";
 import ActionButton from "./ActionButton";

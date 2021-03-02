@@ -5,8 +5,13 @@ const events = {
   opponentId: "opponentId",
   callPeer: "callPeer",
   endCall: "endCall",
+  callEnded: "callEnded",
   opponentIsCalling: "opponentIsCalling",
   rejectCall: "rejectCall",
+  callRejected: "callRejected",
+  answerCall: "answerCall",
+  callAnswered: "callAnswered",
+  isOpponentConnected: "isOpponentConnected",
 };
 
 export default events;

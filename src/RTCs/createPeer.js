@@ -1,10 +1,7 @@
-import Peer from "peerjs";
-import socket from "./configureSocket";
+import Peer from "simple-peer";
 
-function createPeer() {
-  const devOptions = { host: "localhost", port: 5001, path: "/", debug: 2 };
-  const options = process.env.NODE_ENV === "development" ? devOptions : {};
-  const peer = new Peer(socket.id, options);
+function createPeer({ initiator, stream }) {
+  const peer = new Peer({ trickle: false, initiator, stream });
 
   return peer;
 }

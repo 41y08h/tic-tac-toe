@@ -1,17 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { toast } from "react-toastify";
-import useEventSubscription from "../hooks/useEventSubscription";
-import socket from "../RTCs/configureSocket";
-import createPeer from "../RTCs/createPeer";
 import events from "../RTCs/events";
-import getMediaStream from "../utils/getMediaStream";
+import { toast } from "react-toastify";
+import createPeer from "../RTCs/createPeer";
+import socket from "../RTCs/configureSocket";
 import { useChatTab } from "./ChatTabContext";
+import getMediaStream from "../utils/getMediaStream";
+import useEventSubscription from "../hooks/useEventSubscription";
+import React, { createContext, useContext, useRef, useState } from "react";
 
 const VideoChatContext = createContext();
 
@@ -21,19 +15,84 @@ export function useVideoChat() {
 
 export default function VideoChatProvider({ children }) {
   const [callStatus, setCallStatus] = useState("IDLE");
-  const [opponentId, setOpponentId] = useState(null);
-  const [call, setCall] = useState(null);
-  const peerRef = useRef();
+  const [isOpponentConnected, setIsOpponentConnected] = useState(false);
+  const [callerSignal, setCallerSignal] = useState();
 
   const { setTab } = useChatTab();
   const videoRef = useRef();
+  const callerRef = useRef();
+  const receiverRef = useRef();
 
-  function resetCallStates() {
-    setCallStatus("IDLE");
-    setCall(null);
+  // ***** Initiating and receiving call*****
+  async function startOutgoingCall() {
+    // Get media stream from user's camera
+    const stream = await getMediaStream();
 
-    if (peerRef.current) peerRef.current.destroy();
-    peerRef.current = null;
+    // Change calling status to show calling feedback in UI
+    setCallStatus("CALLING");
+
+    // Create a caller WebRTC connection and set it globally,
+    // so that we can access this caller connection later
+
+    // `initiator` is meant to say that,
+    // this user is initiating connection in WebRTC world
+    callerRef.current = createPeer({ initiator: true, stream });
+
+    // Just a reference to callerRef for convenience
+    const caller = callerRef.current;
+
+    // Passing connection signal to the receiver by websockets
+    caller.on("signal", (signal) => {
+      socket.emit(events.callPeer, signal);
+    });
+
+    // Once the handshake is complete,
+    // and we have a stream, show it in the UI
+    caller.on("stream", onCallConnected);
+  }
+
+  async function onIncomingCall(callerSignal) {
+    // Change UI components to let the user decide
+    // what to do with the incoming call
+    setCallStatus("INCOMING");
+    setTab(1);
+
+    // Set caller signal globally to handle it when
+    // the user answers the call
+    setCallerSignal(callerSignal);
+  }
+
+  // ***** Answering and connecting streams *****
+  async function answerCall() {
+    const stream = await getMediaStream();
+
+    // Create a receiver (globally, to use it later on)
+    // WebRTC connection and pass it caller's signal
+    receiverRef.current = createPeer({ initiator: false, stream });
+    const receiver = receiverRef.current;
+    receiver.signal(callerSignal);
+
+    // At this point, the caller is done passing it's
+    // signal to receiver, but to complete the handshake
+    // we need to pass receiver's signal to caller
+
+    // Passing connection signal to the caller by websockets
+    // and as soon as it is complete, the connection is established
+    receiver.on("signal", (signal) => {
+      socket.emit(events.answerCall, signal);
+    });
+
+    // When the connection is established and we get
+    // a stream from the other user, show it in UI
+    receiver.on("stream", onCallConnected);
+  }
+
+  async function onCallAnswered(receiverSignal) {
+    // When the receiver answers the call,
+    // complete the signaling process by passing the
+    // receiver's signal to the caller connection
+    const caller = callerRef.current;
+    caller.signal(receiverSignal);
   }
 
   function onCallConnected(remoteStream) {
@@ -41,84 +100,52 @@ export default function VideoChatProvider({ children }) {
     videoRef.current.srcObject = remoteStream;
   }
 
-  async function startOutgoingCall() {
-    if (!opponentId) return;
-
-    const stream = await getMediaStream();
-
-    // Change call status to give user a nice action feedback
-    setCallStatus("CALLING");
-
-    // Connect to peer via sockets,
-    // the socket will get notified
-    // that his opponent is calling
-    socket.emit(events.callPeer);
-
-    peerRef.current = createPeer();
-
-    const peer = peerRef.current;
-
-    const call = peer.call(opponentId, stream);
-    setCall(call);
-
-    // When opponent answers the call
-    call.on("stream", onCallConnected);
-  }
-
-  async function handleIncomingCall() {
-    // Change call status and tab
-    setCallStatus("INCOMING");
-    setTab(1);
-
-    peerRef.current = createPeer();
-    if (peerRef.current)
-      peerRef.current.on("call", (call) => {
-        // Set call ref to handle mannual call answering by user in other component
-        setCall(call);
-
-        call.on("stream", onCallConnected);
-      });
-  }
-
-  async function answerCall() {
-    const stream = await getMediaStream();
-    call.answer(stream);
-  }
-
-  async function endCall() {
+  // ***** Rejecting incoming calls and ending outgoing or connected calls *****
+  function endCall() {
     socket.emit(events.endCall);
     resetCallStates();
   }
 
-  async function onEndCall() {
+  function onCallEnded() {
     resetCallStates();
+    toast("The call has been ended");
   }
 
-  async function rejectCall() {
+  function rejectCall() {
     socket.emit(events.rejectCall);
     resetCallStates();
   }
 
-  async function onRejectCall() {
+  function onCallRejected() {
     resetCallStates();
     toast("Your opponent rejected this call");
   }
 
-  useEventSubscription(events.opponentId, setOpponentId);
-  useEventSubscription(events.opponentIsCalling, handleIncomingCall);
-  useEventSubscription(events.endCall, onEndCall);
-  useEventSubscription(events.rejectCall, onRejectCall);
+  function resetCallStates() {
+    if (callerRef.current) callerRef.current.destroy();
+    if (receiverRef.current) receiverRef.current.destroy();
+    setCallStatus("IDLE");
+  }
+
+  function onOpponentJoinStateChanged(isConnected) {
+    resetCallStates();
+    setIsOpponentConnected(isConnected);
+  }
+
+  useEventSubscription(events.opponentIsCalling, onIncomingCall);
+  useEventSubscription(events.callAnswered, onCallAnswered);
+  useEventSubscription(events.isOpponentConnected, onOpponentJoinStateChanged);
+  useEventSubscription(events.callEnded, onCallEnded);
+  useEventSubscription(events.callRejected, onCallRejected);
 
   const value = {
     videoRef,
     callStatus,
     setCallStatus,
-    opponentId,
-    setOpponentId,
     startOutgoingCall,
-    endCall,
-    onEndCall,
+    isOpponentConnected,
     answerCall,
+    endCall,
     rejectCall,
   };
   return <VideoChatContext.Provider value={value} children={children} />;
