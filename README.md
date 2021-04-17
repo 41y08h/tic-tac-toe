@@ -1,6 +1,22 @@
-Play Tic Tac Toe with your friends!
-https://tictactoe8.netlify.app/
+# 🎲 TicTacToe 
 
-### If you want to contribute, please read [CONTRIBUTING.md](https://github.com/41y08h/TicTacToe/blob/master/CONTRIBUTING.md)
+Start a Tic Tac Toe game with your friend instantly.
 
-Enjoy :)
+
+## 💾 Features 
+
+- Automatic peer pairing
+- Text Chat
+- Video Chat
+
+
+
+## 🌌 Technologies used
+
+- React.js
+- Socket.io
+- Material UI
+- WebRTC
+
+
+[Open App](https://tictactoe8.netlify.app/)
