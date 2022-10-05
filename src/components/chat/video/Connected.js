@@ -35,27 +35,27 @@ const useStyles = makeStyles(() => ({
 }));
 export default function Connected() {
   const classes = useStyles();
-  const { videoRef, endCall } = useVideoChat();
-  const userVideoRef = useRef();
+  const { localStream, remoteStream, endCall } = useVideoChat();
+  const localVideoRef = useRef();
+  const remoteVideoRef = useRef();
 
   useEffect(() => {
-    getMediaStream().then((userMediaStream) => {
-      userVideoRef.current.srcObject = userMediaStream;
-    });
+    localVideoRef.current.srcObject = localStream;
+    remoteVideoRef.current.srcObject = remoteStream;
   }, []);
 
   return (
     <>
       <video
         autoPlay
-        ref={videoRef}
+        ref={remoteVideoRef}
         className={classes.remoteVideo}
         onLoadedMetadata={(event) => event.target.play()}
       />
       <video
         muted
         autoPlay
-        ref={userVideoRef}
+        ref={localVideoRef}
         className={classes.userVideo}
         onLoadedMetadata={(event) => event.target.play()}
       />

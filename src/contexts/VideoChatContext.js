@@ -19,9 +19,11 @@ export default function VideoChatProvider({ children }) {
   const [callerSignal, setCallerSignal] = useState();
 
   const { setTab } = useChatTab();
-  const videoRef = useRef();
   const callerRef = useRef();
   const receiverRef = useRef();
+
+  const [localStream, setLocalStream] = useState();
+  const [remoteStream, setRemoteStream] = useState();
 
   // ***** Initiating and receiving call*****
   async function startOutgoingCall() {
@@ -29,6 +31,7 @@ export default function VideoChatProvider({ children }) {
     const stream = await getMediaStream();
 
     // Change calling status to show calling feedback in UI
+    setLocalStream(stream);
     setCallStatus("CALLING");
 
     // Create a caller WebRTC connection and set it globally,
@@ -66,6 +69,7 @@ export default function VideoChatProvider({ children }) {
   async function answerCall() {
     const stream = await getMediaStream();
 
+    setLocalStream(stream);
     // Create a receiver (globally, to use it later on)
     // WebRTC connection and pass it caller's signal
     receiverRef.current = createPeer({ initiator: false, stream });
@@ -96,8 +100,8 @@ export default function VideoChatProvider({ children }) {
   }
 
   function onCallConnected(remoteStream) {
+    setRemoteStream(remoteStream);
     setCallStatus("CONNECTED");
-    videoRef.current.srcObject = remoteStream;
   }
 
   // ***** Rejecting incoming calls and ending outgoing or connected calls *****
@@ -125,6 +129,9 @@ export default function VideoChatProvider({ children }) {
     if (callerRef.current) callerRef.current.destroy();
     if (receiverRef.current) receiverRef.current.destroy();
     setCallStatus("IDLE");
+
+    localStream?.getTracks().forEach((track) => track.stop());
+    remoteStream?.getTracks().forEach((track) => track.stop());
   }
 
   function onOpponentJoinStateChanged(isConnected) {
@@ -139,7 +146,8 @@ export default function VideoChatProvider({ children }) {
   useEventSubscription(events.callRejected, onCallRejected);
 
   const value = {
-    videoRef,
+    localStream,
+    remoteStream,
     callStatus,
     setCallStatus,
     startOutgoingCall,
