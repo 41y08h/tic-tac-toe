@@ -3,7 +3,7 @@ import CallIcon from "@material-ui/icons/Call";
 import { IconButton, makeStyles } from "@material-ui/core";
 import { useVideoChat } from "../../../contexts/VideoChatContext";
 import VideoCallDialog from "./VideoCallDialog";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const useStyles = makeStyles(() => ({
   icon: { color: "white" },

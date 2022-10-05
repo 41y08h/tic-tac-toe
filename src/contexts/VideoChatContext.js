@@ -1,5 +1,5 @@
 import events from "../RTCs/events";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import createPeer from "../RTCs/createPeer";
 import socket from "../RTCs/configureSocket";
 import { useChatTab } from "./ChatTabContext";
